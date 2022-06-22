@@ -91,6 +91,7 @@ $Router->Get("/", "home");
 
 
 $Router->Get("/login", 'login');
+$Router->Get("/logup", 'logup');
 
 
 

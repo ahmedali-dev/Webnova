@@ -8,7 +8,7 @@ RequireFile($path);
 
 class Controller
 {
-    use \Home, \Login;
+    use \Home, \Login, \Logup;
 
     static function Views($file, $params = []) {
         ob_start();
