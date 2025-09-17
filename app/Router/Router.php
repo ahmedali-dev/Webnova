@@ -6,6 +6,19 @@ class Router
 {
 
 
+    public static $View = null;
+
+    // public function __construct()
+    // {
+    //     self::$View = function ($file, $params = []) {
+    //         ob_start();
+    //         require_once __DIR__ . "/../Views/$file.php";
+    //         $content = ob_get_clean();
+    //         require_once __DIR__ . "/../Views/Layout/Layout.php";
+    //         ob_end_flush();
+    //     };
+    // }
+
     /**
      * @var array $routes
      */
@@ -84,6 +97,13 @@ class Router
     public static function Dispatch(): void
     {
 
+        self::$View = function ($file, $params = []) {
+            ob_start();
+            require_once __DIR__ . "/../Views/$file.php";
+            $content = ob_get_clean();
+            require_once __DIR__ . "/../Views/Layout/Layout.php";
+            ob_end_flush();
+        };
         $url_parts = explode("/", substr(strtolower(self::getRequestPath()), 1));
         foreach (self::$routes as $route) {
             $params = [];
@@ -109,7 +129,12 @@ class Router
 
             if (is_callable($route['controller'])) {
                 //                $route['controller']($params);
-                call_user_func_array($route['controller'], [...array_values($params)]);
+                call_user_func_array($route['controller'], [
+                    ...array_values([
+                        'req' => ['params' => $params],
+                        'res' => ['view' => self::$View]
+                    ])
+                ]);
             } elseif (is_array($route['controller'])) {
                 for ($i = 0; $i < count($route['controller']); $i++) {
                     if (is_callable($route['controller'][$i])) {
@@ -181,4 +206,6 @@ class Router
         var_dump($r);
         echo "</pre>";
     }
+
+
 }

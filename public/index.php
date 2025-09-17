@@ -14,10 +14,12 @@ use App\Database\User;
 
 // $router::dis
 
-Router::get("/", function () {
+Router::get("/", function ($req,$res) {
+    
     $user = new User();
     $user->getall();
     echo 'hello world from home page';
+    $res['view']('/User/Home', ['name' => 'ahmed ali']);
 });
 
 Router::get('/about', function () {
