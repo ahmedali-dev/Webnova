@@ -1,98 +1,184 @@
 <?php
-namespace Router;
 
-include_once __DIR__.'/../Controllers/Controller.php';
-use Controller\Controller;
+namespace App\Router;
 
 class Router
 {
 
-    protected array $get = array();
-    protected array $post = array();
-    protected Controller $con;
+
+    /**
+     * @var array $routes
+     */
+
+    public static array $routes = array();
 
 
-    //__construct
-    function __construct()
+    /**
+     * @var string $NotFoundClass
+     */
+    public static string $NotFoundClass = 'notFound';
+
+    /**
+     * @var string $NotFoundFun
+     * */
+    public static string $NotFoundFun = 'index';
+
+
+    /**
+     * ! @param string $path => url path http://site.com/home
+     * ! @param callable|string $con => class required
+     */
+
+    public static function get(string $path, callable|string|array $con): void
     {
-        $this->con = new Controller();
+        self::AddRoute('get', $path, $con);
     }
 
-    // retrun router class
-    public static function getRouter()
-    {
-        return new Router();
-    }
+    /**
+     * ! @param string $path => url path http://site.com/home
+     * ! @param callable|string $con => class required
+     */
 
-
-    function Get($path, $fn = '', $callbak = '')
+    public static function post(string $path, callable|string|array $con): void
     {
-        $this->get[$path] = $fn;
-    }
-
-    function Post($path, $fn = '', $callbak = '')
-    {
-        $this->post[$path] = $fn;
+        self::AddRoute('post', $path, $con);
     }
 
 
     /**
-        *@retrun $fn
+     * ! @param string $path => url path http://site.com/home
+     * ! @param callable|string $con => class required
      */
-    function Run()
+
+    public static function delete(string $path, callable|string|array $con): void
     {
-//        echo "<pre>";
-//        var_dump($this->get);
-//        echo "</pre>";
+        self::AddRoute('delete', $path, $con);
+    }
 
-        $pathInfo = $_SERVER['PATH_INFO'] ?? '/';
-        $RM = $_SERVER['REQUEST_METHOD'];
 
-        if ($RM === 'GET') {
-            $fn = $this->get[$pathInfo] ?? NULL;
-        }else if ($RM === 'POST') {
-            $fn = $this->post[$pathInfo] ?? NULL;
-        }else if ($RM === "DELETE") {
-            echo "delete";
+    /**
+     * ! @param string $path => url path http://site.com/home
+     * ! @param callable|string $con => class required
+     */
+
+    public static function put(string $path, callable|string|array $con): void
+    {
+        self::AddRoute('put', $path, $con);
+    }
+
+    /**
+     * @param string $method
+     * @param string $path
+     * @param string|callable $con => controller
+     */
+
+    private static function AddRoute(string $method, string $path, string|callable|array $con): void
+    {
+        self::$routes[] = array(
+            'path' => strtolower($path),
+            'method' => $method,
+            'controller' => $con
+        );
+    }
+
+    public static function Dispatch(): void
+    {
+
+        $url_parts = explode("/", substr(strtolower(self::getRequestPath()), 1));
+        foreach (self::$routes as $route) {
+            $params = [];
+
+            $path_parts = explode('/', substr($route['path'], 1));
+
+            if (count($path_parts) !== count($url_parts)) {
+                continue;
+            }
+
+            if (self::GetMethod() !== $route['method']) {
+                continue;
+            }
+
+            foreach ($path_parts as $idx => $val) {
+                if (strpos($val, '{') === 0) {
+                    $params[substr($val, 1, -1)] = $url_parts[$idx];
+                } else if ($val !== $url_parts[$idx]) {
+                    continue 2;
+                }
+
+            }
+
+            if (is_callable($route['controller'])) {
+                //                $route['controller']($params);
+                call_user_func_array($route['controller'], [...array_values($params)]);
+            } elseif (is_array($route['controller'])) {
+                for ($i = 0; $i < count($route['controller']); $i++) {
+                    if (is_callable($route['controller'][$i])) {
+                        call_user_func_array($route['controller'][$i], [...array_values($params)]);
+                    } else {
+                        $controller = explode('@', $route['controller'][$i]);
+                        $controller_class = $controller[0];
+                        $controller_fun = $controller[1];
+                        $classPath = __DIR__ . "/../Controllers/" . $controller_class . ".php";
+
+                        require_once $classPath;
+                        call_user_func_array(array(new $controller_class, $controller_fun), array(...array_values($params)));
+                    }
+                }
+            } else {
+                $controller = explode('@', $route['controller']);
+                $controller_class = $controller[0];
+                $controller_fun = $controller[1];
+                $classPath = __DIR__ . "/../Controllers/" . $controller_class . ".php";
+
+                require_once $classPath;
+                call_user_func_array(array(new $controller_class, $controller_fun), array(...array_values($params)));
+            }
+            return;
         }
 
-        if ($fn) {
-            call_user_func_array(array($this->con, $fn), array($this));
-        }else {
-            return $fn;
+        self::ErrorPage();
+
+    }
+
+    public static function ErrorPage()
+    {
+        $controller = new \App\Controllers\notFound();
+        return call_user_func_array([$controller, self::$NotFoundFun], []);
+    }
+
+
+    /**
+     * get url request and handler
+     * @return string
+     *
+     */
+
+    public static function getRequestPath(): string
+    {
+        $path = $_SERVER['REQUEST_URI'];
+        $pos = strpos($path, '?');
+        if (!$pos) {
+            return $path;
+        } else {
+            return substr($path, 0, $pos);
         }
     }
 
     /**
-     * @return array
+     * Get request method
+     * @return string
      */
-    public function getGet(): array
-    {
-        return $this->get;
-    }
 
-    /**
-     * @return array
-     */
-    public function getPost(): array
+    public static function GetMethod(): string
     {
-        return $this->post;
+        return strtolower($_SERVER['REQUEST_METHOD']);
     }
 
 
+    public static function print($r): void
+    {
+        echo "<pre>";
+        var_dump($r);
+        echo "</pre>";
+    }
 }
-
-$Router = new Router();
-$Router->Get("/home", "home");
-$Router->Post("/home", "postHome");
-$Router->Post("/", "postHome");
-$Router->Get("/", "home");
-
-
-
-$Router->Get("/login", 'login');
-$Router->Get("/logup", 'logup');
-
-
-
-$Router->Run();
