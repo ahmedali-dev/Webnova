@@ -1,5 +1,5 @@
 {
-    "name": "ahmedali-dev/Codenova",
+    "name": "ahmedali-dev/codenova",
     "description": "php fremwork for handling route and request validation data and easy to use sql",
     "autoload": {
         "psr-4": {
