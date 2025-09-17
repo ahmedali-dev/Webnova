@@ -102,7 +102,7 @@ class Router
             require_once __DIR__ . "/../Views/$file.php";
             $content = ob_get_clean();
             require_once __DIR__ . "/../Views/Layout/Layout.php";
-            ob_end_flush();
+            // ob_end_flush();
         };
         $url_parts = explode("/", substr(strtolower(self::getRequestPath()), 1));
         foreach (self::$routes as $route) {

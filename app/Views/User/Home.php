@@ -1,5 +1,5 @@
 <h1>welcome from home page</h1>
-<div>hello <?= $params['name'] ?></div>
+<div id="div">hello <?= $params['name'] ?></div>
 
 <?php
 
