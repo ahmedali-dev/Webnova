@@ -8,5 +8,15 @@
     },
     "require": {
         "php": ">=8.0"
+    },
+    "repositories": [
+    {
+        "type": "path",
+        "url": ".",
+        "options": {
+            "symlink": true
+        }
     }
+]
+
 }
