@@ -1,5 +1,7 @@
 {
     "name": "ahmedali-dev/codenova",
+    "license": "MIT",
+    "type": "project",
     "description": "php fremwork for handling route and request validation data and easy to use sql",
     "autoload": {
         "psr-4": {
