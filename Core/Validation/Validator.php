@@ -70,9 +70,8 @@ class Validator
 
     private function require(string $name): void
     {
-        
-        $value = $this->data[$name];
-        if (isset($value)) {
+         
+        if (isset($this->data[$name])) {
             return;
         }
 
