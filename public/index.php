@@ -1,74 +1,16 @@
 <?php
 
-use Core\Validation\Validation;
-// require_once __DIR__.'/../app/Router/Router.php';
-
-// $Router = new \Router\Router();
-// $Router->Get("/home");
-
 require __DIR__ . "/../vendor/autoload.php";
+
+// Initialize the view directory
 Core\Config\ViewSetting::init();
-// use Core\Router\Router;
-// use Core\Database\User;
 
-
-// // $router = new Router();
-// // $router->get("/", function () {
-// //     echo 'hello world';
-// // });
-
-// // $router::dis
-
-// Router::get("/", function (Core\Router\Request $req,Core\Router\Response $res) {
-
-//     // $user = new User();
-//     // $user->getall();
-//     // echo 'hello world from home page';
-
-//     $method = $req->method();
-//     $uri = $req->uri();
-
-
-
-//     // $req->setcookies('test', ['name'=>'ahmed','age' => '33'], 1);
-//     $res->status(200)->json([
-//         'message'=> 'error 500',
-//         'method' => $method,
-//         'uri' => $uri,
-//         'cookie' => $req->getcookies('test'),
-//         'header' => $req->headers()['Host'],
-//         'params'=> $req->params,
-//     ]);
-// });
-
-// Router::get('/post/{id}', function (Core\Router\Request $req, Core\Router\Response $res) {
-//     $res->status(200)->json([
-//         'message'=> 'hello from post',
-//         'method'=> $req->method(),
-//         'url'=> $req->uri(),
-//         'params' => $req->params,
-//     ]);
-// });
-
-// Router::get('/about', function () {
-//     echo 'hello from about page';
-// });
-
-// Router::get('/post', 'Post@post');
-// Router::get('/array', [function(){
-//     echo 'hello world<br>';
-// }, 'Post@post',function(){
-//     echo '<br>hello from thire function';
-// }],);
-
-
-// Router::Dispatch();
 
 
 use Core\Router\MatchRoute;
 use Core\Router\Response;
 use Core\Router\Request;
-use Core\Validation\Validator;
+
 $route = new MatchRoute();
 
 $route->get("/", function (Request $request, Response $response) {
