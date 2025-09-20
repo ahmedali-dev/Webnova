@@ -5,7 +5,9 @@
     <style>
         #div{
             width: 300px;
-            height: 300px;
+            height: auto;
+            padding: 1rem;
+            margin-bottom: .5rem;
             background: deepskyblue;
             border-radius: 1rem;
             display: flex;

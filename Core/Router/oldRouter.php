@@ -1,29 +1,17 @@
 <?php
 
-namespace App\Router;
-
-class Router
+namespace Core\Router;
+use Core\Config\ViewSetting;
+use Core\Router\Response;
+use Core\Router\Request;
+class oldRouter
 {
-
-
-    public static $View = null;
-
-    // public function __construct()
-    // {
-    //     self::$View = function ($file, $params = []) {
-    //         ob_start();
-    //         require_once __DIR__ . "/../Views/$file.php";
-    //         $content = ob_get_clean();
-    //         require_once __DIR__ . "/../Views/Layout/Layout.php";
-    //         ob_end_flush();
-    //     };
-    // }
 
     /**
      * @var array $routes
      */
 
-    public static array $routes = array();
+    public static array $routes = [];
 
 
     /**
@@ -97,13 +85,6 @@ class Router
     public static function Dispatch(): void
     {
 
-        self::$View = function ($file, $params = []) {
-            ob_start();
-            require_once __DIR__ . "/../Views/$file.php";
-            $content = ob_get_clean();
-            require_once __DIR__ . "/../Views/Layout/Layout.php";
-            // ob_end_flush();
-        };
         $url_parts = explode("/", substr(strtolower(self::getRequestPath()), 1));
         foreach (self::$routes as $route) {
             $params = [];
@@ -128,13 +109,12 @@ class Router
             }
 
             if (is_callable($route['controller'])) {
-                //                $route['controller']($params);
                 call_user_func_array($route['controller'], [
-                    ...array_values([
-                        'req' => ['params' => $params],
-                        'res' => ['view' => self::$View]
-                    ])
+                    new Request($params), // request
+                    new Response()                   // response
                 ]);
+
+
             } elseif (is_array($route['controller'])) {
                 for ($i = 0; $i < count($route['controller']); $i++) {
                     if (is_callable($route['controller'][$i])) {
@@ -143,7 +123,7 @@ class Router
                         $controller = explode('@', $route['controller'][$i]);
                         $controller_class = $controller[0];
                         $controller_fun = $controller[1];
-                        $classPath = __DIR__ . "/../Controllers/" . $controller_class . ".php";
+                        $classPath =  ViewSetting::$controllersDir . $controller_class . ".php";
 
                         require_once $classPath;
                         call_user_func_array(array(new $controller_class, $controller_fun), array(...array_values($params)));
@@ -153,7 +133,7 @@ class Router
                 $controller = explode('@', $route['controller']);
                 $controller_class = $controller[0];
                 $controller_fun = $controller[1];
-                $classPath = __DIR__ . "/../Controllers/" . $controller_class . ".php";
+                $classPath =  ViewSetting::$controllersDir . $controller_class . ".php";
 
                 require_once $classPath;
                 call_user_func_array(array(new $controller_class, $controller_fun), array(...array_values($params)));
