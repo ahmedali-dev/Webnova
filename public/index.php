@@ -15,25 +15,16 @@ $route = new MatchRoute();
 
 $route->get("/", function (Request $request, Response $response) {
     $valid = $response->validator([
-        // 'name' => ['required', 'string','max:20', 'min:8'],
-        // 'email' => ['required', 'email','extension:gmail,hotmail,yahoo,outlook']
         "name" => ['require', 'isString', 'max:20', 'min:8'],
         "email" => ['require', 'isEmail', 'extension:gmail.com,hotmail.com,yahoo.net,outlook.com']
     ]);
 
     $path = 'User/Home';
-    echo '<pre>';
-    echo 'error array';
-    print_r($valid->errors());
-    echo 'validation array';
-    print_r($valid->validated());
-    echo '</pre>';
-    if (count($valid->errors()) > 0) {
-        return $response->view($path, ['errors'=> $valid->errors()]);
-    }
 
-    
-    // print_r($_['GET']);
+
+    if (count($valid->errors()) > 0) {
+        return $response->view($path, ['errors' => $valid->errors()]);
+    }
 
     $response->view($path, ['name' => 'ahmedali']);
 
