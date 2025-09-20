@@ -87,11 +87,7 @@ class Validator
             return;
         }
 
-        $this->data[$name] = filter_var(
-            $value,
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_STRIP_HIGH
-        );
+        $this->data[$name] = htmlspecialchars($value, ENT_QUOTES,"");
     }
 
 

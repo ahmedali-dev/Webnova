@@ -12,10 +12,20 @@ class Response{
 
     public function view($file, $params = [])
     {
+        $path = ViewSetting::$viewsDir . $file . '.php';
+        if(!file_exists($path)){
+            echo 'file path not found: '. $path;
+            return;
+        }
         ob_start();
-        require_once ViewSetting::$viewsDir . $file . '.php';
+        require_once $path;
         $content = ob_get_clean();
-        require_once ViewSetting::$viewsDir . 'layout/layout.php';
+        $layoutPath = ViewSetting::$viewsDir . 'Layout/Layout.php';
+        if (!file_exists($layoutPath)) {
+            echo 'layout file not found: '. $layoutPath;
+            return;
+        }
+        require_once $layoutPath;
         // ob_end_flush();
     }
 
