@@ -7,9 +7,12 @@ class ViewSetting {
     public static $viewsDir;
     public static $controllersDir;
 
+    public static $envFile;
+
     public static function init() {
-        self::$mainDir = __DIR__ . "/../../src";
-        self::$viewsDir = self::$mainDir . "/Views/";
-        self::$controllersDir = self::$mainDir . "/Controllers/";
+        self::$mainDir =getcwd();
+        self::$viewsDir = self::$mainDir . "/src/Views/";
+        self::$controllersDir = self::$mainDir . "/src/Controllers/";
+        self::$envFile = self::$mainDir . "/.env";
     }
 }

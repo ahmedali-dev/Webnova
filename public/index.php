@@ -4,6 +4,7 @@ require __DIR__ . "/../vendor/autoload.php";
 
 // Initialize the view directory
 Core\Config\ViewSetting::init();
+Core\Utils\dotEnv::loader();
 
 
 
@@ -21,6 +22,10 @@ $route->get("/", function (Request $request, Response $response) {
 
     $path = 'User/Home';
 
+    echo '<pre>';
+    print_r($_ENV);
+    echo '</pre>';
+
 
     if (count($valid->errors()) > 0) {
         return $response->view($path, ['errors' => $valid->errors()]);
@@ -28,6 +33,12 @@ $route->get("/", function (Request $request, Response $response) {
 
     $response->view($path, ['name' => 'ahmedali']);
 
+});
+
+$route->post('/', function (Request $request, Response $response) {
+    $response->status(301)->json([
+        'msg' => 'welcome in my project'
+    ]);
 });
 
 $route->get('/hello', function () {

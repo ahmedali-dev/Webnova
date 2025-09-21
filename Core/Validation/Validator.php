@@ -60,7 +60,7 @@ class Validator
                             continue 2;
                         }
 
-                        echo $rule;
+                       
                         call_user_func([$this, $rule], $args);
                     }
                 }

@@ -26,7 +26,7 @@ class Request
     public function setcookies($name, string|array $value, $day)
     {
         if (isset($_COOKIE[$name])) {
-            echo 'cookie found';
+            return;
         }
 
         if (is_array($value)) {

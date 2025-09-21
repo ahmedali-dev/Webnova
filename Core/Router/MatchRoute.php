@@ -34,13 +34,11 @@ class MatchRoute extends Route
         $routes = $this->routes[$method];
 
 
-        // echo $url . '====>';
+
 
         foreach ($routes as $route) {
-            // echo $route['route'] . '----' . $url . '<br>';
-            echo $url . '====>' .$route['route'] . '<br>';
+
             if ($url == $route['route']) {
-                echo 'route is match' . $route['route'] . '<br>';
                 $this->route = $route;
                 return;
             }
@@ -61,12 +59,6 @@ class MatchRoute extends Route
 
             $this->route = $route;
 
-            echo '<pre>';
-            // print_r($route);
-            // print_r($this->params);
-            // print_r($routeParts);
-            print_r($this->route);
-            echo '</pre>';
             return;
         }
     }
@@ -122,7 +114,7 @@ class MatchRoute extends Route
                 throw new Exception("Controller file not found: {$classPath}");
             }
 
-            
+
             require_once $classPath;
 
             if (!class_exists($controllerClass)) {
@@ -139,17 +131,9 @@ class MatchRoute extends Route
         }
     }
 
-    public function notFound(string|array|callable $con){
+    public function notFound(string|array|callable $con)
+    {
         $this->notFoundPage = $con;
     }
 }
-
-//MatchRoute
-
-// $r = new index();
-
-// $r->get('/', function () {
-//     echo 'hello';
-// });
-
 

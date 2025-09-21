@@ -6,12 +6,18 @@ A lightweight PHP framework for building MVC-style web applications with simple 
 
 ## ✨ Features
 
-* 🚦 Simple and expressive **Routing**
-* ✅ Built-in **Validation**
-* 🖼️ **View rendering** with layout support
-* 📦 Composer autoloading
-* 🛠️ Lightweight and easy to extend
 
+* 🚦 Simple and expressive Routing (supports GET, POST, PUT, PATCH, DELETE)
+
+* ✅ Built-in Validation
+
+* 🖼️ View rendering with layout support
+
+* ⚙️ Lightweight .env loader (pure PHP, no extra packages)
+
+* 📦 Composer autoloading
+
+* 🛠️ Lightweight and easy to extend
 ---
 
 ## 📥 Installation
@@ -31,12 +37,14 @@ require __DIR__ . "/../vendor/autoload.php";
 
 // Initialize the view directory
 Core\Config\ViewSetting::init();
+// Load .env file
+Core\Utils\dotEnv::loader();
 
+
+// Load route handling
 use Core\Router\MatchRoute;
 use Core\Router\Response;
 use Core\Router\Request;
-
-$route = new MatchRoute();
 ```
 
 ---
@@ -100,6 +108,26 @@ You should see:
 
 ```
 Welcome, Codenova Framework 👋
+```
+----
+
+```
+DB_NAME='hello'
+DB_PASS=''
+DB_HOST='localhost'''
+DB_USER=root
+```
+
+## ⚙️ Using `.env`
+
+You can store sensitive configuration in a `.env` file in your project root:
+
+```
+APP_ENV=local
+APP_DEBUG=true
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=password
 ```
 
 ---
