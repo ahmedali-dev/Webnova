@@ -4,35 +4,19 @@ require __DIR__ . "/../vendor/autoload.php";
 
 // Initialize the view directory
 Core\Config\ViewSetting::init();
-Core\Utils\dotEnv::loader();
+// load env variable from '.env'
+Core\Utils\DotEnv::loader();
 
 
 
-use Core\Router\MatchRoute;
+$route = Core\Router\Route::route();
 use Core\Router\Response;
 use Core\Router\Request;
 
-$route = new MatchRoute();
+
 
 $route->get("/", function (Request $request, Response $response) {
-    $valid = $response->validator([
-        "name" => ['require', 'isString', 'max:20', 'min:8'],
-        "email" => ['require', 'isEmail', 'extension:gmail.com,hotmail.com,yahoo.net,outlook.com']
-    ]);
-
-    $path = 'User/Home';
-
-    echo '<pre>';
-    print_r($_ENV);
-    echo '</pre>';
-
-
-    if (count($valid->errors()) > 0) {
-        return $response->view($path, ['errors' => $valid->errors()]);
-    }
-
-    $response->view($path, ['name' => 'ahmedali']);
-
+    $response->view("welcome");
 });
 
 $route->post('/', function (Request $request, Response $response) {
@@ -60,10 +44,15 @@ $route->get('/hello/v/{id}/name', function (Request $request, Response $response
 $route->get(
     '/hello/v/{id}/name/{post}',
     [
-        function (Request $request, Response $response) {
+        function (Request $request, Response $response, $next) {
             echo 'function from hello/v/{id}/name/{post}' . " " . $request->method;
+            $next();
         },
-        'Post@post'
+        'Post@post',
+        function($req,$res,$con) {
+            echo '<hr> from Third function';
+            echo 'hello world';
+        }
     ]
 );
 
@@ -72,8 +61,8 @@ $route->get('/d', function () {
 });
 
 $route->notFound([
-    function () {
-        echo 'page is not found please go back and try again';
-    },
+    // function () {
+    //     echo 'page is not found please go back and try again';
+    // },
     'notFound@index'
 ]);

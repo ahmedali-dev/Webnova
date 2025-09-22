@@ -2,7 +2,7 @@
 
 
 class notFound{
-    public function index(){
-        echo 'page not found';
+    public function index($req, $res){
+        return $res->view('404');
     }
 }

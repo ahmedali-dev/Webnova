@@ -6,13 +6,12 @@ namespace Core\Router;
 
 class Request
 {
-
-    public array $params = [];
-    public string $method = '';
-    public string $uri = '';
-    public array $headers = [];
-
-    public array $cookies = [];
+    
+    public readonly array $params;
+    public readonly string $method;
+    public readonly string $uri;
+    public readonly array $headers;
+    public readonly array $cookies;
 
     public function __construct(array $params = []){
         $this->params = $params;
@@ -23,15 +22,13 @@ class Request
     }
 
 
-    public function setcookies($name, string|array $value, $day)
+    public function setCookie($name, string|array $value, $day)
     {
         if (isset($_COOKIE[$name])) {
-            return;
+            return $this;
         }
 
-        if (is_array($value)) {
-            $value = json_encode($value);
-        }
+        $value = is_array($value) ? json_encode($value) : $value;
 
         setcookie($name, $value, time() + (86400 * $day), '/');
 
@@ -39,8 +36,9 @@ class Request
     }
 
 
-    public function deletecookies($name){
+    public function deleteCookie($name){
         if (isset($_COOKIE[$name])) {
+            setcookie($name,'', time() - 3600, '/');
             unset($_COOKIE[$name]);
         }
         return $this;
